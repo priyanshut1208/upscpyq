@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spectrum Chapter 1 Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      width: 90%;
+      max-width: 700px;
+    }
+    .hide {
+      display: none;
+    }
+    .btn {
+      display: inline-block;
+      margin: 10px 5px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #007bff;
+      color: #fff;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+    .option-btn {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+    }
+    .option-btn.correct {
+      background-color: #d4edda;
+      border-color: #28a745;
+    }
+    .option-btn.wrong {
+      background-color: #f8d7da;
+      border-color: #dc3545;
+    }
+    .question-count {
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="start-screen">
+      <h2>Spectrum Modern History - Chapter 1 Quiz</h2>
+      <p>Test your knowledge with 100 questions from Chapter 1.</p>
+      <button class="btn" onclick="startQuiz()">Start Quiz</button>
+    </div>
+
+    <div id="quiz-screen" class="hide">
+      <div class="question-count" id="question-count"></div>
+      <div id="question"></div>
+      <div id="options"></div>
+      <button class="btn" id="nextBtn" onclick="nextQuestion()">Next</button>
+    </div>
+
+    <div id="result-screen" class="hide">
+      <h2>Quiz Completed!</h2>
+      <p id="score"></p>
+      <button class="btn" onclick="startQuiz()">Restart Quiz</button>
+    </div>
+  </div>
+
+  <script>
+    const quizData = [
+  { question: "Which of the following is a primary source of modern Indian history?", options: ["Historian's interpretation", "Spectrum book", "Autobiography of a freedom fighter", "NCERT textbook"], answer: 2 },
+  { question: "What was the main purpose of establishing Fort William College in 1800?", options: ["Educate Indian princes", "Promote Sanskrit learning", "Train civil servants in Indian languages", "Train Indian soldiers in English"], answer: 2 },
+  { question: "The British Blue Books were:", options: ["Reports by Indian nationalists", "Travel accounts of Europeans", "Parliamentary reports on colonial affairs", "Personal records of Governors-General"], answer: 2 },
+  { question: "District Gazetteers published during British rule were meant to document:", options: ["Personal opinions of district collectors", "Natural disasters", "Local administrative, social, and economic conditions", "Religious activities"], answer: 2 },
+  { question: "Which of the following is considered a private source?", options: ["Census reports", "Government notifications", "Personal letters", "Court judgments"], answer: 2 },
+  { question: "Which is a secondary source?", options: ["1857 Mutiny newspaper", "Gandhi’s autobiography", "Historian’s book on 1857", "East India Company records"], answer: 2 },
+  { question: "The term ‘Approaches to History’ refers to:", options: ["Number of sources", "Methods used to write history", "British divisions", "Colonial revenue"], answer: 1 },
+  { question: "Which is an archaeological source for modern Indian history?", options: ["Inscriptions", "Autobiographies", "Official records", "British reports"], answer: 0 },
+  { question: "Travelogues are useful because they:", options: ["Contain exact statistics", "Are part of govt data", "Provide outsider perspectives", "Promote nationalism"], answer: 2 },
+  { question: "District reports during British era included:", options: ["Only laws", "Only census", "Only tax records", "Wider socio-economic data"], answer: 3 },
+  { question: "Which literary source gives insights into the mindset of freedom fighters?", options: ["Newspapers", "Autobiographies", "Court records", "Government reports"], answer: 1 },
+{ question: "Which of these sources can help understand the religious policies of the British?", options: ["Missionary records", "Railway reports", "Revenue records", "Military dispatches"], answer: 0 },
+{ question: "Newspapers during the freedom struggle were mainly used to:", options: ["Publish British propaganda", "Promote government policies", "Mobilize public opinion", "Discuss sports"], answer: 2 },
+{ question: "Which official source is vital for understanding land revenue systems?", options: ["Gazetteers", "Zamindari accounts", "Census", "Settlement records"], answer: 3 },
+{ question: "Which British officer started maintaining diaries to track local developments?", options: ["District Magistrates", "Collective Councils", "Indian Ministers", "Missionaries"], answer: 0 },
+{ question: "The most significant limitation of official British sources is:", options: ["Inaccessibility", "Unorganized format", "Colonial bias", "Lack of statistics"], answer: 2 },
+{ question: "One key difference between private and official sources is:", options: ["Language", "Objectivity", "Perspective", "Printing style"], answer: 2 },
+{ question: "Which type of source is likely to exaggerate personal contributions?", options: ["Court records", "Newspapers", "Autobiographies", "Census reports"], answer: 2 },
+{ question: "Which was a major reason behind compiling gazetteers?", options: ["Document local beliefs", "Economic planning", "Uniform governance", "Understanding tribal dances"], answer: 2 },
+{ question: "Travelogues by foreign visitors mainly reflect:", options: ["Religious biases", "Colonial orders", "Personal observations", "Scientific records"], answer: 2 },
+{ question: "Why are census records valuable?", options: ["Reveal rulers' names", "Document population patterns", "Track trade routes", "Note battles"], answer: 1 },
+{ question: "Which of these is NOT found in administrative reports?", options: ["Revenue details", "Social reforms", "Judicial cases", "Mythical stories"], answer: 3 },
+{ question: "Which source was used to introduce British legal concepts in India?", options: ["Travelogues", "Court records", "Autobiographies", "Paintings"], answer: 1 },
+{ question: "Paintings and photographs of colonial era are useful because:", options: ["They’re literary", "They provide visual evidence", "They are statistical", "They were official documents"], answer: 1 },
+{ question: "What do we call interpretations made by historians long after the events?", options: ["Primary source", "Secondary source", "Tertiary source", "Colonial source"], answer: 1 },
+{ question: "Missionaries' writings helped understand:", options: ["Agriculture", "Socio-religious practices", "Wars", "Judiciary"], answer: 1 },
+{ question: "How are administrative reports different from gazetteers?", options: ["Reports are statistical, gazetteers are descriptive", "Both are same", "Gazetteers are biased", "Reports are personal"], answer: 0 },
+{ question: "Who were key compilers of early gazetteers?", options: ["Indian ministers", "British officials", "Tribal leaders", "Historians"], answer: 1 },
+{ question: "British policy documentation was largely preserved in:", options: ["District diaries", "Annual administrative reports", "Journals", "Folk tales"], answer: 1 },
+{ question: "Private diaries differ from memoirs in that diaries:", options: ["Are written after events", "Include interviews", "Are written daily", "Published officially"], answer: 2 },
+{ question: "Who maintained district diaries during British rule?", options: ["Village headmen", "District magistrates", "British traders", "Missionaries"], answer: 1 },
+{ question: "Which document type was not typically used as a historical source?", options: ["Gazetteers", "Newspapers", "Ballads", "Telegrams"], answer: 3 },
+{ question: "Who is credited for initiating survey-based ethnographic studies in India?", options: ["Max Muller", "Herbert Risley", "William Bentinck", "Lord Curzon"], answer: 1 },
+{ question: "What is the value of the Census reports from the British period?", options: ["Political propaganda", "Religious preaching", "Demographic insight", "British military movements"], answer: 2 },
+{ question: "Which of the following contains vivid details about administration and local conditions?", options: ["Company charters", "Settlement reports", "Missionary diaries", "Commercial advertisements"], answer: 1 },
+{ question: "Who among the following was a noted British civil servant and ethnographer?", options: ["William Sleeman", "Gopal Krishna Gokhale", "Raja Ram Mohan Roy", "Lord Ripon"], answer: 0 },
+{ question: "Which record gives detailed data on caste, tribe, and occupations?", options: ["Religious texts", "Census", "Autobiographies", "Police diaries"], answer: 1 },
+{ question: "The ‘Hunter Commission Report’ is a good example of:", options: ["Private publication", "Judicial document", "Parliamentary source", "Commercial record"], answer: 2 },
+{ question: "Who wrote the travel account 'Travels in the Mughal Empire'?", options: ["Tavernier", "Bernier", "Marco Polo", "Fa-Hien"], answer: 1 },
+{ question: "What is the main difference between administrative and private records?", options: ["Tone", "Bias", "Perspective", "All of the above"], answer: 3 },
+{ question: "Which British Viceroy encouraged writing district gazetteers?", options: ["Lord Canning", "Lord Wellesley", "Lord Curzon", "Lord Mayo"], answer: 2 },
+{ question: "Which among the following are NOT literary sources?", options: ["Novels", "Paintings", "Speeches", "Travelogues"], answer: 1 },
+{ question: "Which Indian reformer’s writings are considered a private source?", options: ["Nehru’s Discovery of India", "Constitution of India", "Company Charter", "Census of 1911"], answer: 0 },
+{ question: "What role did vernacular press play in modern Indian history?", options: ["Just report events", "Mobilize masses and spread ideas", "Advertise British products", "Promote tourism"], answer: 1 },
+{ question: "In what way are missionary records useful?", options: ["Religious preaching", "Socio-cultural documentation", "Trade reports", "Military movements"], answer: 1 },
+{ question: "Which of the following was NOT a function of gazetteers?", options: ["Revenue collection", "Administrative reference", "Descriptive study of region", "Social commentary"], answer: 0 },
+{ question: "Which primary source tells about the 1857 revolt from a soldier’s view?", options: ["Official reports", "British newspaper", "Autobiography", "Folk songs"], answer: 2 },
+{ question: "The official records collected during British rule mostly reflect:", options: ["Indian perspective", "Colonial interest", "Religious bias", "Tribal views"], answer: 1 },
+{ question: "Ethnographic studies by British officials often categorized Indians based on:", options: ["Income", "Religion", "Race and caste", "Occupation only"], answer: 2 },
+{ question: "What does the term ‘Colonial Construct’ mean in historical writing?", options: ["Truthful record", "British version of reality", "Religious agenda", "Tribal philosophy"], answer: 1 },
+{ question: "Private correspondence of Indian leaders gives insight into:", options: ["Colonial policy", "Public emotions", "Personal motivations", "Revenue systems"], answer: 2 },
+{ question: "Newspapers like 'Kesari' and 'Amrita Bazar Patrika' were important because they:", options: ["Spread communalism", "Supported British", "Criticized Indian leaders", "Mobilized people"], answer: 3 },
+{ question: "Court records are important as they provide:", options: ["Rulings and legal disputes", "Revenue codes", "Tribal laws", "Foreign policy"], answer: 0 },
+{ question: "Why are vernacular sources crucial for historians?", options: ["Easier translation", "Mass appeal", "Direct regional insights", "British acceptance"], answer: 2 },
+{ question: "The 'India Office Records' are preserved in:", options: ["Delhi", "London", "Paris", "Kolkata"], answer: 1 },
+{ question: "What type of source is the autobiography of Nehru?", options: ["Primary private source", "Official source", "Secondary government source", "None"], answer: 0 },
+{ question: "Who authored ‘The History of British India’ that influenced colonial historiography?", options: ["James Mill", "Lord Macaulay", "Max Muller", "Bernier"], answer: 0 },
+{ question: "Census operations in British India were conducted at intervals of:", options: ["5 years", "10 years", "15 years", "20 years"], answer: 1 },
+{ question: "Which of these was NOT a use of surveys conducted by the British?", options: ["Land classification", "Economic data collection", "Cultural appreciation", "Military planning"], answer: 2 },
+{ question: "What was the impact of colonial official documents on historical writing?", options: ["Gave complete truth", "Neglected Indian viewpoint", "Celebrated Indian traditions", "Ignored administration"], answer: 1 },
+{ question: "Which of the following can be considered as tertiary source?", options: ["Gazette", "Bibliography", "Memoir", "Census"], answer: 1 },
+{ question: "The term ‘Colonial Archive’ refers to:", options: ["Freedom fighters' books", "British collected documents", "Tribal records", "Missionary schools"], answer: 1 },
+{ question: "Who among the following was not a foreign traveler in medieval or modern India?", options: ["Alberuni", "Marco Polo", "Megasthenes", "James Mill"], answer: 3 },
+{ question: "What is the chronological order in using historical sources?", options: ["Secondary, Primary, Tertiary", "Primary, Secondary, Tertiary", "Tertiary, Primary, Secondary", "None"], answer: 1 },
+{ question: "The primary aim of colonial surveys was:", options: ["Celebrate Indian culture", "Empower local rulers", "Administrative control", "Religious reform"], answer: 2 },
+{ question: "Personal diaries of British officials are classified as:", options: ["Public records", "Private primary sources", "Secondary sources", "Judicial texts"], answer: 1 },
+{ question: "Why do historians cross-reference sources?", options: ["Avoid plagiarism", "Confirm facts", "Check language", "Disprove everything"], answer: 1 },
+{ question: "Which kind of source is a folk ballad from 1857?", options: ["Visual", "Written", "Oral", "Secondary"], answer: 2 },
+{ question: "Which institution today holds most of the colonial archives in India?", options: ["National Archives of India", "British Library", "IGNCA", "ASI"], answer: 0 },
+{ question: "What is the limitation of oral sources?", options: ["Language", "Authenticity", "Length", "All of the above"], answer: 3 },
+{ question: "Who wrote ‘Poverty and Un-British Rule in India’?", options: ["Dadabhai Naoroji", "Gopal Gokhale", "Tilak", "Gandhi"], answer: 0 },
+{ question: "Which of these gives direct data on British trade policies?", options: ["Commercial reports", "Folk tales", "Court rulings", "Religious texts"], answer: 0 },   {
+        question: "Who authored ‘The History of British India’ that heavily influenced colonial interpretation?",
+        options: ["James Mill", "Macaulay", "Max Muller", "William Jones"],
+        answer: 0
+      },
+      {
+        question: "Who wrote ‘Poverty and Un-British Rule in India’?",
+        options: ["Gopal Krishna Gokhale", "Dadabhai Naoroji", "Tilak", "Jawaharlal Nehru"],
+        answer: 1
+      },
+      {
+        question: "‘India Wins Freedom’ was authored by:",
+        options: ["Gandhiji", "Maulana Abul Kalam Azad", "Sardar Patel", "Subhas Chandra Bose"],
+        answer: 1
+      },
+      {
+        question: "Who is the author of ‘Discovery of India’?",
+          
+        options: ["Bal Gangadhar Tilak", "Jawaharlal Nehru", "Mahatma Gandhi", "Rajendra Prasad"],
+        answer: 1
+      },
+      {
+        question: "‘Hind Swaraj’ was written by:",
+        options: ["Gandhiji", "Tilak", "Ambedkar", "Raja Ram Mohan Roy"],
+        answer: 0
+      },
+      {
+        question: "Who among the following wrote ‘Anandmath’?",
+        options: ["Rabindranath Tagore", "Bankim Chandra Chatterjee", "Sarat Chandra", "Premchand"],
+        answer: 1
+      },
+      {
+        question: "‘What Congress and Gandhi have done to Untouchables’ was written by:",
+        options: ["Gandhi", "B.R. Ambedkar", "Jawaharlal Nehru", "Lala Lajpat Rai"],
+        answer: 1
+      },
+      {
+        question: "The book ‘Unhappy India’ was written by:",
+        options: ["Lala Lajpat Rai", "Subhash Chandra Bose", "Bhagat Singh", "Motilal Nehru"],
+        answer: 0
+      },
+      {
+        question: "Who wrote ‘Essays on Indian Economics’?",
+        options: ["Jawaharlal Nehru", "Gopal Krishna Gokhale", "Dadabhai Naoroji", "R.C. Dutt"],
+        answer: 1
+      },
+      {
+        question: "Which freedom fighter wrote ‘Why I am an Atheist’?",
+        options: ["Bhagat Singh", "Ram Prasad Bismil", "Chandrashekhar Azad", "Subhash Bose"],
+        answer: 0
+      }
+    ];
+
+
+let currentQuestion = 0;
+let score = 0;
+let quizStartTime = 0;
+
+const startScreen = document.getElementById("start-screen");
+const quizScreen = document.getElementById("quiz-screen");
+const resultScreen = document.getElementById("result-screen");
+const questionEl = document.getElementById("question");
+const optionsEl = document.getElementById("options");
+const scoreEl = document.getElementById("score");
+const questionCountEl = document.getElementById("question-count");
+
+function startQuiz() {
+  currentQuestion = 0;
+  score = 0;
+  shuffleArray(quizData); // Randomize questions each time
+  quizStartTime = Date.now();
+  startScreen.classList.add("hide");
+  resultScreen.classList.add("hide");
+  quizScreen.classList.remove("hide");
+  loadQuestion();
+    }
+
+    function loadQuestion() {
+      const q = quizData[currentQuestion];
+      questionCountEl.textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
+      questionEl.textContent = q.question;
+      optionsEl.innerHTML = "";
+      q.options.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.textContent = option;
+        button.classList.add("option-btn");
+        button.onclick = () => selectOption(button, index);
+        optionsEl.appendChild(button);
+      });
+      document.getElementById("nextBtn").disabled = true;
+    }
+
+    function selectOption(button, selectedIndex) {
+      const correctIndex = quizData[currentQuestion].answer;
+      const buttons = optionsEl.querySelectorAll(".option-btn");
+      buttons.forEach(btn => btn.disabled = true);
+
+      if (selectedIndex === correctIndex) {
+        button.classList.add("correct");
+        score++;
+      } else {
+        button.classList.add("wrong");
+        buttons[correctIndex].classList.add("correct");
+      }
+      document.getElementById("nextBtn").disabled = false;
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion < quizData.length) {
+        loadQuestion();
+      } else {
+        endQuiz();
+      }
+    }
+
+    function endQuiz() {
+  quizScreen.classList.add("hide");
+  resultScreen.classList.remove("hide");
+  const timeTaken = Math.floor((Date.now() - quizStartTime) / 1000);
+  const minutes = Math.floor(timeTaken / 60);
+  const seconds = timeTaken % 60;
+  scoreEl.textContent = `You scored ${score} out of ${quizData.length} in ${minutes}m ${seconds}s.`;
+    }
+  
+
+    // Fisher-Yates Shuffle Algorithm
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+  </script>
+</body>
+</html>
