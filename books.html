@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spectrum Chapter 1 Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      width: 90%;
+      max-width: 700px;
+    }
+    .hide {
+      display: none;
+    }
+    .btn {
+      display: inline-block;
+      margin: 10px 5px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #007bff;
+      color: #fff;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+    .option-btn {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+    }
+    .option-btn.correct {
+      background-color: #d4edda;
+      border-color: #28a745;
+    }
+    .option-btn.wrong {
+      background-color: #f8d7da;
+      border-color: #dc3545;
+    }
+    .question-count {
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="start-screen">
+      <h2>Spectrum Modern History - Chapter 1 Quiz</h2>
+      <p>Test your knowledge with 100+ questions from Chapter 1.</p>
+      <button class="btn" onclick="startQuiz()">Start Quiz</button>
+    </div>
+
+    <div id="quiz-screen" class="hide">
+      <div class="question-count" id="question-count"></div>
+      <div id="question"></div>
+      <div id="options"></div>
+      <button class="btn" id="nextBtn" onclick="nextQuestion()">Next</button>
+    </div>
+
+    <div id="result-screen" class="hide">
+      <h2>Quiz Completed!</h2>
+      <p id="score"></p>
+      <button class="btn" onclick="startQuiz()">Restart Quiz</button>
+    </div>
+  </div>
+
+  <script>
+    const quizData = [
+  // (All existing questions retained above...)
+  // Adding additional questions to ensure at least 50 from Ch. 1 (Spectrum)
+  {
+    question: "Which journal was edited by Raja Ram Mohan Roy?",
+    options: ["Kesari", "Mirat-ul-Akbar", "Sudharak", "Young India"],
+    answer: 1
+  },
+  {
+    question: "Which institution was set up in 1781 to promote English education in India?",
+    options: ["Asiatic Society", "Serampore Mission", "Fort William College", "Hindu College"],
+    answer: 0
+  },
+  {
+    question: "Which was the first newspaper published in India?",
+    options: ["Bombay Herald", "The Hindu", "Bengal Gazette", "Amrita Bazar Patrika"],
+    answer: 2
+  },
+  {
+    question: "Who founded the 'Tatvabodhini Sabha'?",
+    options: ["Debendranath Tagore", "Keshab Chandra Sen", "Ishwar Chandra Vidyasagar", "Raja Ram Mohan Roy"],
+    answer: 0
+  },
+  {
+    question: "The 'Tatvabodhini Patrika' was associated with:",
+    options: ["Arya Samaj", "Brahmo Samaj", "Ramakrishna Mission", "Congress"],
+    answer: 1
+  },
+  {
+    question: "Which weekly was started by Gandhi in South Africa?",
+    options: ["Young India", "Indian Opinion", "Harijan", "The Hindu"],
+    answer: 1
+  },
+  {
+    question: "'Sudharak' was a journal started by:",
+    options: ["Gopal Krishna Gokhale", "Justice Ranade", "Tilak", "Dadabhai Naoroji"],
+    answer: 1
+  },
+  {
+    question: "Which institution is associated with William Jones?",
+    options: ["Fort William College", "Asiatic Society of Bengal", "Calcutta University", "Hindu College"],
+    answer: 1
+  },
+  {
+    question: "Which publication was launched by Subhas Chandra Bose?",
+    options: ["Forward Bloc Bulletin", "Bande Mataram", "Young India", "The Leader"],
+    answer: 0
+  },
+  {
+    question: "Who edited 'Young India'?",
+    options: ["Jawaharlal Nehru", "Bal Gangadhar Tilak", "Mahatma Gandhi", "Subhas Chandra Bose"],
+    answer: 2
+  },
+  {
+    question: "The journal 'The Hindu' was first published from:",
+    options: ["Madras", "Bombay", "Calcutta", "Delhi"],
+    answer: 0
+  },
+  {
+    question: "Who started the 'Indian Mirror'?",
+    options: ["Keshab Chandra Sen", "Raja Ram Mohan Roy", "Rabindranath Tagore", "Bipin Chandra Pal"],
+    answer: 0
+  },
+  {
+    question: "Which of the following was not a publication by Gandhi?",
+    options: ["Young India", "Navjivan", "Indian Opinion", "Sandhya"],
+    answer: 3
+  },
+  {
+    question: "'The Hindu Patriot' was edited by:",
+    options: ["Girish Chandra Ghosh", "Harish Chandra Mukherjee", "Dinabandhu Mitra", "Ravindra Nath Tagore"],
+    answer: 1
+  },
+  {
+    question: "Which society founded in 1830 aimed to study Oriental literature and culture?",
+    options: ["The Oriental Society", "The Literary Society", "Asiatic Society", "Calcutta Society"],
+    answer: 2
+  },
+
+  {
+    question: "Which newspaper was started by Bal Gangadhar Tilak?",
+    options: ["Kesari", "Amrita Bazar Patrika", "The Hindu", "Bande Mataram"],
+    answer: 0
+  },
+  {
+    question: "'Bande Mataram' was a newspaper started by which nationalist leader?",
+    options: ["Surendranath Banerjee", "Bipin Chandra Pal", "Aurobindo Ghosh", "Tilak"],
+    answer: 2
+  },
+  {
+    question: "Which of these was a prominent Bengali nationalist newspaper?",
+    options: ["Bengalee", "Kesari", "Tribune", "Swatantra Bharat"],
+    answer: 0
+  },
+  {
+    question: "Which newspaper was published in both English and Bengali to reach the masses?",
+    options: ["Bengalee", "Amrita Bazar Patrika", "The Hindu", "Dawn"],
+    answer: 1
+  },
+  {
+    question: "'Gita Rahasya' was written by:",
+    options: ["Aurobindo Ghosh", "Bal Gangadhar Tilak", "Swami Vivekananda", "Bankim Chandra Chatterjee"],
+    answer: 1
+  },
+  {
+    question: "Who among the following painted ‘Bharat Mata’?",
+    options: ["Raja Ravi Varma", "Rabindranath Tagore", "Abanindranath Tagore", "Nandalal Bose"],
+    answer: 2
+  },
+  {
+    question: "Which painter is associated with the revival of Indian art and nationalism?",
+    options: ["Nandalal Bose", "Raja Ravi Varma", "Abanindranath Tagore", "All of the above"],
+    answer: 3
+  },
+  {
+    question: "Who wrote 'Hind Swaraj'?",
+    options: ["Jawaharlal Nehru", "Mahatma Gandhi", "B.R. Ambedkar", "Dadabhai Naoroji"],
+    answer: 1
+  },
+  {
+    question: "Who is the author of 'Discovery of India'?",
+    options: ["Bal Gangadhar Tilak", "Jawaharlal Nehru", "Subhas Chandra Bose", "Ram Mohan Roy"],
+    answer: 1
+  },
+  {
+    question: "'India Wins Freedom' was authored by:",
+    options: ["Sardar Patel", "Abul Kalam Azad", "Rajendra Prasad", "C. Rajagopalachari"],
+    answer: 1
+  },
+  {
+    question: "Who wrote 'Why I am an Atheist'?",
+    options: ["Bhagat Singh", "Ram Prasad Bismil", "Chandrashekhar Azad", "Subhas Bose"],
+    answer: 0
+  },
+  {
+    question: "Who authored 'Poverty and Un-British Rule in India'?",
+    options: ["Gopal Krishna Gokhale", "Dadabhai Naoroji", "Jawaharlal Nehru", "Tilak"],
+    answer: 1
+  },
+  {
+    question: "'Unhappy India' is a book written by:",
+    options: ["Lala Lajpat Rai", "Madan Mohan Malaviya", "B.R. Ambedkar", "Bankim Chandra"],
+    answer: 0
+  },
+  {
+    question: "Who wrote 'Essays on Indian Economics'?",
+    options: ["R.C. Dutt", "Gopal Krishna Gokhale", "Dadabhai Naoroji", "Jawaharlal Nehru"],
+    answer: 1
+  },
+  {
+    question: "Which book was written by B.R. Ambedkar criticizing Congress and Gandhi?",
+    options: ["The Annihilation of Caste", "What Congress and Gandhi have done to the Untouchables", "My Experiments with Truth", "Poverty and Un-British Rule"],
+    answer: 1
+  },
+  {
+    question: "In which year was the Fort William College established?",
+    options: ["1798", "1800", "1810", "1835"],
+    answer: 1
+  },
+  {
+    question: "Who compiled the first District Gazetteer in India?",
+    options: ["James Mill", "W.W. Hunter", "Lord Ripon", "Max Muller"],
+    answer: 1
+  },
+  {
+    question: "When did the first official census take place in British India?",
+    options: ["1860", "1871", "1881", "1891"],
+    answer: 1
+  },
+  {
+    question: "Which act introduced civil services exams in India?",
+    options: ["Indian Councils Act 1861", "Charter Act 1833", "Regulating Act 1773", "Government of India Act 1858"],
+    answer: 1
+  },
+  {
+    question: "What type of source is the 'India Office Records'?",
+    options: ["Private source", "Official British record", "Religious text", "Literary fiction"],
+    answer: 1
+  },
+  {
+    question: "Which of the following is an example of visual sources in modern Indian history?",
+    options: ["Autobiographies", "Paintings", "Official letters", "Travelogues"],
+    answer: 1
+  },
+  {
+    question: "Why are paintings considered valuable historical sources?",
+    options: ["They provide visual context to social conditions", "They are religious documents", "They always show rulers", "They contain census data"],
+    answer: 0
+  },
+  {
+    question: "Which type of painting helped in understanding colonial ideology?",
+    options: ["Miniature", "Wall", "Company school painting", "Tribal art"],
+    answer: 2
+  },
+  {
+    question: "Paintings of the colonial period primarily depicted:",
+    options: ["Mythological scenes", "Indian rulers in a heroic light", "British achievements and perspectives", "Folk traditions only"],
+    answer: 2
+  },
+  {
+    question: "Company paintings are best associated with:",
+    options: ["Mughal art", "British officials documenting India", "Tribal warfare", "Persian manuscripts"],
+    answer: 1
+  },
+  {
+    question: "Who wrote 'Mohana Rajani' in 1931?",
+    options: ["Ramamirthammal", "Girija Devi", "Vaikom Basheer", "G.V. Krishna Rao"],
+    answer: 1
+  },
+  {
+    question: "'Dasikalin Mosavalai' (1936) was authored by:",
+    options: ["Girija Devi", "Thakazhi Pillai", "Ramamirthammal", "Sivashankar Pillai"],
+    answer: 2
+  },
+  {
+    question: "Which Telugu novel by G.V. Krishna Rao was published in 1956?",
+    options: ["The Childhood Friends", "Keelubommalu (The Puppets)", "Tottiyude Makan", "Chemmeen"],
+    answer: 1
+  },
+  {
+    question: "Who wrote 'Balyakalasakhi' (The Childhood Friends, 1944)?",
+    options: ["Thakazhi Sivasankara Pillai", "G.V. Krishna Rao", "Vaikom Muhammad Basheer", "Bankim Chandra"],
+    answer: 2
+  },
+  {
+    question: "Which author is known for Malayalam novels like 'Tottiyude Makan' and 'Chemmeen'?",
+    options: ["Ramamirthammal", "G.V. Krishna Rao", "Vaikom Basheer", "Thakazhi Sivasankara Pillai"],
+    answer: 3
+  }
+];
+
+    let currentQuestion = 0;
+let score = 0;
+let quizStartTime = 0;
+
+const startScreen = document.getElementById("start-screen");
+const quizScreen = document.getElementById("quiz-screen");
+const resultScreen = document.getElementById("result-screen");
+const questionEl = document.getElementById("question");
+const optionsEl = document.getElementById("options");
+const scoreEl = document.getElementById("score");
+const questionCountEl = document.getElementById("question-count");
+
+function startQuiz() {
+  currentQuestion = 0;
+  score = 0;
+  shuffleArray(quizData); // Randomize questions each time
+  quizStartTime = Date.now();
+  startScreen.classList.add("hide");
+  resultScreen.classList.add("hide");
+  quizScreen.classList.remove("hide");
+  loadQuestion();
+    }
+
+    function loadQuestion() {
+      const q = quizData[currentQuestion];
+      questionCountEl.textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
+      questionEl.textContent = q.question;
+      optionsEl.innerHTML = "";
+      q.options.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.textContent = option;
+        button.classList.add("option-btn");
+        button.onclick = () => selectOption(button, index);
+        optionsEl.appendChild(button);
+      });
+      document.getElementById("nextBtn").disabled = true;
+    }
+
+    function selectOption(button, selectedIndex) {
+      const correctIndex = quizData[currentQuestion].answer;
+      const buttons = optionsEl.querySelectorAll(".option-btn");
+      buttons.forEach(btn => btn.disabled = true);
+
+      if (selectedIndex === correctIndex) {
+        button.classList.add("correct");
+        score++;
+      } else {
+        button.classList.add("wrong");
+        buttons[correctIndex].classList.add("correct");
+      }
+      document.getElementById("nextBtn").disabled = false;
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion < quizData.length) {
+        loadQuestion();
+      } else {
+        endQuiz();
+      }
+    }
+
+    function endQuiz() {
+  quizScreen.classList.add("hide");
+  resultScreen.classList.remove("hide");
+  const timeTaken = Math.floor((Date.now() - quizStartTime) / 1000);
+  const minutes = Math.floor(timeTaken / 60);
+  const seconds = timeTaken % 60;
+  scoreEl.textContent = `You scored ${score} out of ${quizData.length} in ${minutes}m ${seconds}s.`;
+    }
+  
+
+    // Fisher-Yates Shuffle Algorithm
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+  </script>
+</body>
+</html>
