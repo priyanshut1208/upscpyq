@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spectrum Chapter 1 Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      width: 90%;
+      max-width: 700px;
+    }
+    .hide {
+      display: none;
+    }
+    .btn {
+      display: inline-block;
+      margin: 10px 5px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #007bff;
+      color: #fff;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+    .option-btn {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+    }
+    .option-btn.correct {
+      background-color: #d4edda;
+      border-color: #28a745;
+    }
+    .option-btn.wrong {
+      background-color: #f8d7da;
+      border-color: #dc3545;
+    }
+    .question-count {
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="start-screen">
+      <h2>Spectrum Modern History - Chapter 1 Quiz</h2>
+      <p>Test your knowledge with 100 questions from Chapter 1.</p>
+      <button class="btn" onclick="startQuiz()">Start Quiz</button>
+    </div>
+
+    <div id="quiz-screen" class="hide">
+      <div class="question-count" id="question-count"></div>
+      <div id="question"></div>
+      <div id="options"></div>
+      <button class="btn" id="nextBtn" onclick="nextQuestion()">Next</button>
+    </div>
+
+    <div id="result-screen" class="hide">
+      <h2>Quiz Completed!</h2>
+      <p id="score"></p>
+      <button class="btn" onclick="startQuiz()">Restart Quiz</button>
+    </div>
+  </div>
+
+  <script>
+    const quizData = 
+ [{
+  question: "Which mountain range forms the natural border between Spain and France?",
+  options: ["Alps", "Pyrenees", "Jura", "Vosges"],
+  answer: 1
+},
+{
+  question: "Mont Blanc, the highest peak of the Alps, lies on the border of which two countries?",
+  options: ["France and Germany", "France and Switzerland", "France and Italy", "Switzerland and Austria"],
+  answer: 2
+},
+{
+  question: "Which is the highest peak of the Andes mountain range?",
+  options: ["Mount Chimborazo", "Mount Illimani", "Mount Aconcagua", "Mount Huascarán"],
+  answer: 2
+},
+{
+  question: "The Appalachian Mountains are located in which continent?",
+  options: ["Asia", "Europe", "Africa", "North America"],
+  answer: 3
+},
+{
+  question: "Which mountain range contains the highest peak in Iran?",
+  options: ["Zagros Mountains", "Alborz Mountains", "Hindu Kush", "Taurus Mountains"],
+  answer: 1
+},
+{
+  question: "Which African mountain range includes Mount Toubkal?",
+  options: ["Drakensberg", "Ruwenzori", "Atlas", "Simien"],
+  answer: 2
+},
+{
+  question: "The Alps are NOT present in which of the following countries?",
+  options: ["France", "Switzerland", "Germany", "Spain"],
+  answer: 3
+},
+{
+  question: "Which mountain range runs through Romania, Ukraine, and Slovakia?",
+  options: ["Balkan Mountains", "Carpathian Mountains", "Pyrenees", "Apennines"],
+  answer: 1
+},
+{
+  question: "The Great Dividing Range is found in which country?",
+  options: ["New Zealand", "Australia", "South Africa", "India"],
+  answer: 1
+},
+{
+  question: "What is the highest peak in the Ural Mountains?",
+  options: ["Mount Narodnaya", "Mount Elbrus", "Mount Ararat", "Mount Demirkazık"],
+  answer: 0
+},
+{
+  question: "Mount Damavand is located near which major city in Iran?",
+  options: ["Isfahan", "Tehran", "Shiraz", "Tabriz"],
+  answer: 1
+},
+{
+  question: "Which mountain is the highest in mainland Europe?",
+  options: ["Mont Blanc", "Mount Elbrus", "Zard Kuh", "Mount Aconcagua"],
+  answer: 1
+},
+{
+  question: "Which range in Myanmar contains Mount Victoria?",
+  options: ["Chin Hills", "Arakan Yoma", "Shan Plateau", "Naga Hills"],
+  answer: 1
+},
+{
+  question: "The Taurus Mountains are located in which country?",
+  options: ["Iran", "Iraq", "Turkey", "Afghanistan"],
+  answer: 2
+},
+{
+  question: "Which mountain peak lies in both Russia and Mongolia?",
+  options: ["Tirich Mir", "Mount Narodnaya", "Belukha Mountain", "Kaçkar Dağı"],
+  answer: 2
+},
+{
+  question: "What mountain range is located in Germany and Czechia, known for Klínovec?",
+  options: ["Harz Mountains", "Black Forest", "Erzgebirge (Ore Mountains)", "Jura Mountains"],
+  answer: 2
+},
+{
+  question: "Which peak is the highest in the Southern Atlas Mountains?",
+  options: ["Jebel Ayachi", "Mount Toubkal", "Mount Tahat", "Mount Demirkazık"],
+  answer: 0
+},
+{
+  question: "Which peak is the highest point of the Apennine Mountains?",
+  options: ["Monte Rosa", "Corno Grande", "Monte Viso", "Mount Etna"],
+  answer: 1
+},
+{
+  question: "Which mountain lies in the Altai range shared by Russia, Mongolia, Kazakhstan, and China?",
+  options: ["Kaçkar Dağı", "Belukha", "Nyenchen Tanglha", "Ulugh Muztagh"],
+  answer: 1
+},
+{
+  question: "Which mountain range includes Mount Whitney?",
+  options: ["Sierra Nevada", "Cascade Range", "Rocky Mountains", "Appalachians"],
+  answer: 0
+},
+{
+  question: "Which mountain range stretches from northern Italy down its spine?",
+  options: ["Alps", "Apennines", "Jura", "Vosges"],
+  answer: 1
+},
+{
+  question: "Which mountain range separates Europe from Asia?",
+  options: ["Altai", "Caucasus", "Ural Mountains", "Carpathians"],
+  answer: 2
+},
+{
+  question: "Which peak is located in the Kunlun Mountains?",
+  options: ["Ulugh Muztagh", "Mount Elbrus", "Zard Kuh", "Mount Rainier"],
+  answer: 0
+},
+{
+  question: "Mount Kosciuszko is the highest point in which Australian range?",
+  options: ["Darling Range", "MacDonnell Ranges", "Great Dividing Range", "Flinders Ranges"],
+  answer: 2
+},
+{
+  question: "Which mountain range includes the peak Cross Fell?",
+  options: ["Pennines", "Scottish Highlands", "Cambrian Mountains", "Cotswolds"],
+  answer: 0
+},{
+  question: "Which mountain range stretches along the western coast of South America?",
+  options: ["Andes", "Alps", "Sierra Nevada", "Rockies"],
+  answer: 0
+},
+{
+  question: "Mount Narodnaya, the highest peak of the Urals, is located in which country?",
+  options: ["Kazakhstan", "Russia", "Uzbekistan", "Mongolia"],
+  answer: 1
+},
+{
+  question: "Which country contains both the Black Forest and Harz Mountains?",
+  options: ["Austria", "Germany", "Switzerland", "France"],
+  answer: 1
+},
+{
+  question: "Which mountain range is shared by Spain and France?",
+  options: ["Jura", "Carpathians", "Pyrenees", "Apennines"],
+  answer: 2
+},
+{
+  question: "The Jura Mountains lie primarily in which two countries?",
+  options: ["France and Germany", "France and Switzerland", "Germany and Austria", "Switzerland and Italy"],
+  answer: 1
+},
+{
+  question: "Which of these mountain ranges is entirely within Turkey?",
+  options: ["Taurus Mountains", "Pontic Mountains", "Both A and B", "Hindu Kush"],
+  answer: 2
+},
+{
+  question: "The Caucasus Mountains are located between which two seas?",
+  options: ["Black Sea and Caspian Sea", "Red Sea and Arabian Sea", "Caspian Sea and Aral Sea", "Baltic Sea and North Sea"],
+  answer: 0
+},
+{
+  question: "Mount Elbrus is part of which mountain range?",
+  options: ["Himalayas", "Caucasus Mountains", "Ural Mountains", "Altai Mountains"],
+  answer: 1
+},
+{
+  question: "Which of these is the highest mountain in the UK?",
+  options: ["Snowdon", "Cross Fell", "Scafell Pike", "Ben Nevis"],
+  answer: 3
+},
+{
+  question: "Which is the highest mountain in continental Africa?",
+  options: ["Mount Kenya", "Mount Meru", "Mount Kilimanjaro", "Ras Dashen"],
+  answer: 2
+},
+{
+  question: "Mount Mitchell is located in which U.S. state?",
+  options: ["Colorado", "California", "North Carolina", "Alaska"],
+  answer: 2
+},
+{
+  question: "The Drakensberg Mountains are mainly found in:",
+  options: ["Namibia", "South Africa and Lesotho", "Ethiopia", "Zambia"],
+  answer: 1
+},
+{
+  question: "Mount Toubkal is located in which African mountain range?",
+  options: ["Atlas Mountains", "Ruwenzori Mountains", "Simien Mountains", "Drakensberg Mountains"],
+  answer: 0
+},
+{
+  question: "Mount Whitney is the highest peak of the:",
+  options: ["Rockies", "Sierra Nevada", "Cascade Range", "Appalachians"],
+  answer: 1
+},
+{
+  question: "Which is the tallest mountain in the contiguous United States?",
+  options: ["Mount Rainier", "Mount Whitney", "Mount Elbert", "Denali"],
+  answer: 1
+},
+{
+  question: "Which mountain in the Andes lies closest to the equator?",
+  options: ["Huascarán", "Chimborazo", "Illimani", "Aconcagua"],
+  answer: 1
+},
+{
+  question: "The Vosges Mountains are located entirely within:",
+  options: ["Germany", "France", "Austria", "Czech Republic"],
+  answer: 1
+},
+{
+  question: "Mount Damavand is a potentially active volcano in which range?",
+  options: ["Zagros Mountains", "Alborz Mountains", "Karakoram", "Taurus Mountains"],
+  answer: 1
+},
+{
+  question: "Which mountain range lies to the north of the Iranian plateau?",
+  options: ["Zagros", "Taurus", "Hindu Kush", "Alborz"],
+  answer: 3
+},
+{
+  question: "Which peak is highest among the following?",
+  options: ["Mount Elbrus", "Mount Kilimanjaro", "Mont Blanc", "Mount Kosciuszko"],
+  answer: 0
+},
+{
+  question: "The Andes pass through how many South American countries?",
+  options: ["3", "5", "7", "9"],
+  answer: 3
+},
+{
+  question: "Which country has both the Apennines and the Alps?",
+  options: ["Switzerland", "Germany", "Italy", "France"],
+  answer: 2
+},
+{
+  question: "The Pennines are often referred to as the 'backbone' of which country?",
+  options: ["France", "Scotland", "Wales", "England"],
+  answer: 3
+},
+{
+  question: "The Great Dividing Range runs along which direction in Australia?",
+  options: ["North to South", "East to West", "Diagonal NW to SE", "It is circular"],
+  answer: 0
+},
+{
+  question: "Which mountain range is a continuation of the Himalayas into Myanmar?",
+  options: ["Naga Hills", "Arakan Yoma", "Shan Plateau", "Chin Hills"],
+  answer: 1
+}
+,
+
+  {
+    question: "What is the highest peak of the Carpathian Mountains?",
+    options: ["Aneto", "Gerlachovský štít", "Mont Blanc", "Cross Fell"],
+    answer: 1
+  },
+  {
+    question: "Which country contains Grand Ballon, the highest peak of the Vosges Mountains?",
+    options: ["Germany", "France", "Switzerland", "Austria"],
+    answer: 1
+  },
+  {
+    question: "Crêt de la Neige is the highest point of which mountain range?",
+    options: ["Jura Mountains", "Black Forest", "Harz Mountains", "Alps"],
+    answer: 0
+  },
+  {
+    question: "Where is Feldberg, the highest peak of the Black Forest Mountains?",
+    options: ["Austria", "Germany", "Czechia", "Slovakia"],
+    answer: 1
+  },
+  {
+    question: "What is the highest point in the Harz Mountains?",
+    options: ["Brocken", "Klínovec", "Cross Fell", "Zard Kuh"],
+    answer: 0
+  },
+  {
+    question: "Klínovec is the highest peak of which mountain range?",
+    options: ["Alps", "Erzgebirge", "Pennines", "Pyrenees"],
+    answer: 1
+  },
+  {
+    question: "Aneto is the highest peak of which mountain range?",
+    options: ["Balkan Mountains", "Pennines", "Pyrenees", "Carpathians"],
+    answer: 2
+  },
+  {
+    question: "Which three countries share the Alps and its highest peak Mont Blanc?",
+    options: ["Germany, Austria, Switzerland", "France, Italy, Switzerland", "France, Germany, Austria", "Italy, Austria, Slovenia"],
+    answer: 1
+  },
+  {
+    question: "What is the highest point of the Balkan Mountains?",
+    options: ["Botev Peak", "Cross Fell", "Ulugh Muztagh", "Mount Victoria"],
+    answer: 0
+  },
+  {
+    question: "Which is the highest peak in the Pennines of England?",
+    options: ["Brocken", "Cross Fell", "Mount Elbert", "Kaçkar Dağı"],
+    answer: 1
+  },
+  {
+    question: "Tirich Mir is the highest peak in which mountain range?",
+    options: ["Kunlun", "Hindu Kush", "Taurus", "Altai"],
+    answer: 1
+  },
+  {
+    question: "Which mountain range contains Mount Victoria?",
+    options: ["Arakan Yoma", "Pontic", "Hoggar", "Zagros"],
+    answer: 0
+  },
+  {
+    question: "Ulugh Muztagh is located in which mountain range?",
+    options: ["Alborz", "Taurus", "Kunlun", "Atlas"],
+    answer: 2
+  },
+  {
+    question: "Mount Damavand is the highest peak of which range?",
+    options: ["Zagros", "Alborz", "Caucasus", "Himalayas"],
+    answer: 1
+  },
+  {
+    question: "Which is the highest peak in the Zagros Mountains?",
+    options: ["Zard Kuh", "Mount Elbrus", "Mount Toubkal", "Botev Peak"],
+    answer: 0
+  },
+  {
+    question: "Belukha Mountain is found in which mountain range?",
+    options: ["Ural", "Altai", "Taurus", "Caucasus"],
+    answer: 1
+  },
+  {
+    question: "Kaçkar Dağı is the highest peak of which Turkish mountain range?",
+    options: ["Pontic Mountains", "Taurus Mountains", "Zagros", "Altai"],
+    answer: 0
+  },
+  {
+    question: "Which mountain range includes Mount Demirkazık?",
+    options: ["Arakan Yoma", "Pontic Mountains", "Taurus Mountains", "Kunlun Mountains"],
+    answer: 2
+  },
+  {
+    question: "What is the name of the highest peak of Mount Kilimanjaro?",
+    options: ["Kibo", "Mawenzi", "Uhuru Peak", "Shira"],
+    answer: 2
+  },
+  {
+    question: "Corno Grande is the highest peak of which Italian range?",
+    options: ["Apennine Mountains", "Alps", "Jura Mountains", "Vosges Mountains"],
+    answer: 0
+  },
+  {
+    question: "Nyenchen Tanglha is a peak in which region?",
+    options: ["Nepal", "Bhutan", "China (Tibet)", "Pakistan"],
+    answer: 2
+  },
+  {
+    question: "Mount Tahat is the highest point in which African country?",
+    options: ["Algeria", "Nigeria", "Morocco", "Tunisia"],
+    answer: 0
+  },
+  {
+    question: "Jebel Ayachi is a part of which mountain range?",
+    options: ["Atlas Mountains", "Drakensberg", "Southern Atlas Mountains", "Rif Mountains"],
+    answer: 2
+  },
+  {
+    question: "Mount Aconcagua, the highest peak in South America, is in which range?",
+    options: ["Andes", "Rockies", "Sierra Nevada", "Amazon Range"],
+    answer: 0
+  },
+  {
+    question: "Which mountain in North America is the highest in the Rockies?",
+    options: ["Mount Whitney", "Mount Elbert", "Mount Rainier", "Mount Mitchell"],
+    answer: 1
+  },
+  {
+    question: "Mount Rainier is the highest peak of which North American range?",
+    options: ["Cascade Range", "Appalachian Mountains", "Rockies", "Sierra Nevada"],
+    answer: 0
+  },
+  {
+    question: "Which mountain is the highest in the Appalachian Mountains?",
+    options: ["Mount Mitchell", "Mount Kosciuszko", "Mount Elbert", "Mount Whitney"],
+    answer: 0
+  },
+  {
+    question: "Mount Whitney belongs to which U.S. mountain range?",
+    options: ["Cascade", "Sierra Nevada", "Appalachian", "Rockies"],
+    answer: 1
+  },
+  {
+    question: "Which is the highest mountain in mainland Australia?",
+    options: ["Mount Ossa", "Mount Townsend", "Mount Kosciuszko", "Mount Bartle Frere"],
+    answer: 2
+  },
+  {
+    question: "Mount Narodnaya is the highest point of which mountain range?",
+    options: ["Ural Mountains", "Caucasus Mountains", "Altai Mountains", "Taurus Mountains"],
+    answer: 0
+  },
+  {
+    question: "Where is Mount Toubkal located?",
+    options: ["Algeria", "Tunisia", "Morocco", "Libya"],
+    answer: 2
+  },
+  {
+    question: "Mount Lesotho is located in which African mountain range?",
+    options: ["Atlas Mountains", "Hoggar Mountains", "Drakensberg Mountains", "Eastern Highlands"],
+    answer: 2
+  },
+  {
+    question: "Which is the highest mountain in the Caucasus?",
+    options: ["Mount Damavand", "Mount Elbrus", "Mount Narodnaya", "Tirich Mir"],
+    answer: 1
+  },
+  {
+    question: "Which mountain range separates Europe and Asia and contains Mount Narodnaya?",
+    options: ["Caucasus Mountains", "Altai Mountains", "Ural Mountains", "Carpathian Mountains"],
+    answer: 2
+  },
+  {
+    question: "Which mountain range spans both Turkey and Syria and includes Kaçkar Dağı?",
+    options: ["Pontic Mountains", "Taurus Mountains", "Zagros Mountains", "Hindu Kush"],
+    answer: 0
+  },
+  {
+    question: "Mount Elbrus is located in which two countries?",
+    options: ["Russia and Georgia", "Russia and Azerbaijan", "Russia and Turkey", "Russia and Iran"],
+    answer: 0
+  },
+  {
+    question: "Which mountain range is located in both France and Switzerland?",
+    options: ["Vosges", "Jura", "Alps", "Pyrenees"],
+    answer: 1
+  },
+  {
+    question: "Which mountain range includes Jebel Ayachi?",
+    options: ["Atlas Mountains", "Southern Atlas Mountains", "Tibesti Mountains", "Anti-Atlas Mountains"],
+    answer: 1
+  },
+  {
+    question: "Mount Mitchell is the highest peak of which range?",
+    options: ["Sierra Nevada", "Appalachians", "Cascades", "Great Dividing Range"],
+    answer: 1
+  }
+
+
+    ];
+
+
+let currentQuestion = 0;
+let score = 0;
+let quizStartTime = 0;
+
+const startScreen = document.getElementById("start-screen");
+const quizScreen = document.getElementById("quiz-screen");
+const resultScreen = document.getElementById("result-screen");
+const questionEl = document.getElementById("question");
+const optionsEl = document.getElementById("options");
+const scoreEl = document.getElementById("score");
+const questionCountEl = document.getElementById("question-count");
+
+function startQuiz() {
+  currentQuestion = 0;
+  score = 0;
+  shuffleArray(quizData); // Randomize questions each time
+  quizStartTime = Date.now();
+  startScreen.classList.add("hide");
+  resultScreen.classList.add("hide");
+  quizScreen.classList.remove("hide");
+  loadQuestion();
+    }
+
+    function loadQuestion() {
+      const q = quizData[currentQuestion];
+      questionCountEl.textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
+      questionEl.textContent = q.question;
+      optionsEl.innerHTML = "";
+      q.options.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.textContent = option;
+        button.classList.add("option-btn");
+        button.onclick = () => selectOption(button, index);
+        optionsEl.appendChild(button);
+      });
+      document.getElementById("nextBtn").disabled = true;
+    }
+
+    function selectOption(button, selectedIndex) {
+      const correctIndex = quizData[currentQuestion].answer;
+      const buttons = optionsEl.querySelectorAll(".option-btn");
+      buttons.forEach(btn => btn.disabled = true);
+
+      if (selectedIndex === correctIndex) {
+        button.classList.add("correct");
+        score++;
+      } else {
+        button.classList.add("wrong");
+        buttons[correctIndex].classList.add("correct");
+      }
+      document.getElementById("nextBtn").disabled = false;
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion < quizData.length) {
+        loadQuestion();
+      } else {
+        endQuiz();
+      }
+    }
+
+    function endQuiz() {
+  quizScreen.classList.add("hide");
+  resultScreen.classList.remove("hide");
+  const timeTaken = Math.floor((Date.now() - quizStartTime) / 1000);
+  const minutes = Math.floor(timeTaken / 60);
+  const seconds = timeTaken % 60;
+  scoreEl.textContent = `You scored ${score} out of ${quizData.length} in ${minutes}m ${seconds}s.`;
+    }
+  
+
+    // Fisher-Yates Shuffle Algorithm
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+  </script>
+</body>
+</html>
