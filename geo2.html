@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spectrum Chapter 1 Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      width: 90%;
+      max-width: 700px;
+    }
+    .hide {
+      display: none;
+    }
+    .btn {
+      display: inline-block;
+      margin: 10px 5px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #007bff;
+      color: #fff;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+    .option-btn {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+    }
+    .option-btn.correct {
+      background-color: #d4edda;
+      border-color: #28a745;
+    }
+    .option-btn.wrong {
+      background-color: #f8d7da;
+      border-color: #dc3545;
+    }
+    .question-count {
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="start-screen">
+      <h2>Spectrum Modern History - Chapter 1 Quiz</h2>
+      <p>Test your knowledge with 100+ questions from Chapter 1.</p>
+      <button class="btn" onclick="startQuiz()">Start Quiz</button>
+    </div>
+
+    <div id="quiz-screen" class="hide">
+      <div class="question-count" id="question-count"></div>
+      <div id="question"></div>
+      <div id="options"></div>
+      <button class="btn" id="nextBtn" onclick="nextQuestion()">Next</button>
+    </div>
+
+    <div id="result-screen" class="hide">
+      <h2>Quiz Completed!</h2>
+      <p id="score"></p>
+      <button class="btn" onclick="startQuiz()">Restart Quiz</button>
+    </div>
+  </div>
+
+  <script>
+    const quizData = 
+  [
+    {
+  question: "Which plateau is referred to as the largest high-altitude plateau in the world?",
+  options: ["Laurentian Plateau", "Altiplano Plateau", "Tibetan Plateau", "Katanga Plateau"],
+  answer: 2
+},
+{
+  question: "Which mineral is abundantly found in the Katanga Plateau of DR Congo?",
+  options: ["Bauxite", "Cobalt", "Columbite", "Graphite"],
+  answer: 1
+},
+{
+  question: "The Putorana Plateau is located in which part of Russia?",
+  options: ["Far East", "Siberia", "Caucasus", "Ural"],
+  answer: 1
+},
+{
+  question: "Which plateau is famous for housing the Salar de Uyuni lithium reserves?",
+  options: ["Putorana Plateau", "Altiplano Plateau", "Jos Plateau", "Korat Plateau"],
+  answer: 1
+},
+{
+  question: "Which mineral is commonly associated with salt flats of the Altiplano?",
+  options: ["Zinc", "Lithium", "Gold", "Nickel"],
+  answer: 1
+},
+{
+  question: "Boron, chromite, and copper are key minerals of which plateau?",
+  options: ["Anatolian Plateau", "Shan Plateau", "Mato Grosso Plateau", "Jos Plateau"],
+  answer: 0
+},
+{
+  question: "The Shan Plateau is a leading global source of which gemstone?",
+  options: ["Ruby", "Jade", "Sapphire", "Amber"],
+  answer: 1
+},
+{
+  question: "Which mineral is extracted from the salt-rich areas of the Potwar Plateau?",
+  options: ["Zinc", "Salt", "Bauxite", "Uranium"],
+  answer: 1
+},
+{
+  question: "Which plateau in Spain and Portugal is known for coal and tungsten?",
+  options: ["Laurentian Plateau", "Meseta Plateau", "Piedmont Plateau", "Katanga Plateau"],
+  answer: 1
+},
+{
+  question: "Which mineral-rich plateau lies primarily in Canada?",
+  options: ["Jos Plateau", "Laurentian Plateau", "Great Basin Plateau", "Korat Plateau"],
+  answer: 1
+},
+{
+  question: "Which of the following plateaus has the most diverse range of strategic minerals?",
+  options: ["Potwar Plateau", "Altiplano Plateau", "Katanga Plateau", "Shan Plateau"],
+  answer: 2
+},
+{
+  question: "Columbite, found in the Jos Plateau, is an ore of which metal?",
+  options: ["Tantalum", "Copper", "Cobalt", "Iron"],
+  answer: 0
+},
+{
+  question: "Which plateau spans both Bolivia and Peru?",
+  options: ["Putorana Plateau", "Katanga Plateau", "Altiplano Plateau", "Piedmont Plateau"],
+  answer: 2
+},
+{
+  question: "Which plateau in the U.S. is particularly rich in uranium and gold?",
+  options: ["Ozark Plateau", "Colorado Plateau", "Great Basin Plateau", "Piedmont Plateau"],
+  answer: 1
+},
+{
+  question: "Which mineral is notably absent from the Patagonia Plateau?",
+  options: ["Lead", "Zinc", "Copper", "All of the above"],
+  answer: 3
+},
+{
+  question: "Which plateau is known for high-grade tin and tungsten deposits in Southeast Asia?",
+  options: ["Shan Plateau", "Korat Plateau", "Chiapas Plateau", "Putorana Plateau"],
+  answer: 0
+},
+{
+  question: "What is the primary export mineral of the Mato Grosso Plateau in Brazil?",
+  options: ["Gold", "Zirconium", "Chromite", "Salt"],
+  answer: 1
+},
+{
+  question: "Which mineral group is shared between both the Great Basin and Colorado Plateau?",
+  options: ["Gold and Silver", "Bauxite and Iron", "Phosphate and Manganese", "Coal and Salt"],
+  answer: 0
+},
+{
+  question: "The Meseta Plateau is located on which peninsula?",
+  options: ["Iberian Peninsula", "Balkan Peninsula", "Scandinavian Peninsula", "Arabian Peninsula"],
+  answer: 0
+},
+{
+  question: "Which plateau lies adjacent to the Appalachian Mountains?",
+  options: ["Colorado Plateau", "Piedmont Plateau", "Potwar Plateau", "Jos Plateau"],
+  answer: 1
+},
+{
+  question: "Which mineral found in the Jos Plateau is also a key component of electronics?",
+  options: ["Zinc", "Tantalum", "Iron", "Boron"],
+  answer: 1
+},
+{
+  question: "Which plateau provides significant uranium resources in North America?",
+  options: ["Ozark Plateau", "Laurentian Plateau", "Colorado Plateau", "Meseta Plateau"],
+  answer: 2
+},
+{
+  question: "Which of the following plateaus is known for silver mining in Mexico?",
+  options: ["Chiapas Plateau", "Korat Plateau", "Putorana Plateau", "Altiplano Plateau"],
+  answer: 0
+},
+{
+  question: "What type of minerals dominate the Katanga Plateau?",
+  options: ["Fossil fuels", "Industrial metals", "Precious stones", "Radioactive isotopes"],
+  answer: 1
+},
+{
+  question: "Which plateau in Thailand is a major source of potash and gypsum?",
+  options: ["Jos Plateau", "Korat Plateau", "Chiapas Plateau", "Anatolian Plateau"],
+  answer: 1
+},
+
+{
+  question: "Which plateau in Russia is known for rich platinum and palladium reserves?",
+  options: ["Laurentian Plateau", "Putorana Plateau", "Katanga Plateau", "Altiplano Plateau"],
+  answer: 1
+},
+{
+  question: "Which plateau is considered the richest in copper and cobalt in Africa?",
+  options: ["Jos Plateau", "Abyssinian Plateau", "Katanga Plateau", "Korat Plateau"],
+  answer: 2
+},
+{
+  question: "Which plateau’s resources are vital for electric vehicle battery production?",
+  options: ["Altiplano Plateau", "Jos Plateau", "Shan Plateau", "Patagonia Plateau"],
+  answer: 0
+},
+{
+  question: "The Katanga Plateau lies in which African country?",
+  options: ["Ethiopia", "Angola", "Nigeria", "DR Congo"],
+  answer: 3
+},
+{
+  question: "Which of the following plateaus is a major source of uranium in Canada?",
+  options: ["Laurentian Plateau", "Ozark Plateau", "Colorado Plateau", "Putorana Plateau"],
+  answer: 0
+},
+{
+  question: "Where is the Meseta Plateau located?",
+  options: ["Spain", "Morocco", "France", "Italy"],
+  answer: 0
+},
+{
+  question: "Which plateau has one of the largest tin and columbite reserves in West Africa?",
+  options: ["Korat Plateau", "Jos Plateau", "Shan Plateau", "Putorana Plateau"],
+  answer: 1
+},
+{
+  question: "Which plateau has uranium, zirconium, and other radioactive minerals?",
+  options: ["Mato Grosso Plateau", "Colorado Plateau", "Chiapas Plateau", "Potwar Plateau"],
+  answer: 0
+},
+{
+  question: "The term 'Altiplano' refers to a high plateau in which continent?",
+  options: ["Africa", "Asia", "South America", "Europe"],
+  answer: 2
+},
+{
+  question: "In which plateau are iron and copper the main mineral resources in Spain?",
+  options: ["Meseta Plateau", "Patagonia Plateau", "Shan Plateau", "Korat Plateau"],
+  answer: 0
+},
+{
+  question: "Which plateau contains key deposits of chromite and boron?",
+  options: ["Ozark Plateau", "Anatolian Plateau", "Jos Plateau", "Shan Plateau"],
+  answer: 1
+},
+{
+  question: "Which plateau is located in the northeastern part of Thailand?",
+  options: ["Putorana Plateau", "Korat Plateau", "Chiapas Plateau", "Patagonia Plateau"],
+  answer: 1
+},
+{
+  question: "Which plateau is known for a large reserve of tin, silver, and zinc?",
+  options: ["Katanga Plateau", "Altiplano Plateau", "Laurentian Plateau", "Potwar Plateau"],
+  answer: 1
+},
+{
+  question: "The Abyssinian Plateau is mainly found in which country?",
+  options: ["Somalia", "Nigeria", "Ethiopia", "Eritrea"],
+  answer: 2
+},
+{
+  question: "The Shan Plateau lies in which Southeast Asian country?",
+  options: ["Vietnam", "Laos", "Myanmar", "Thailand"],
+  answer: 2
+},
+{
+  question: "Which mineral from the Shan Plateau is considered a national symbol of Myanmar?",
+  options: ["Tin", "Tungsten", "Jade", "Gold"],
+  answer: 2
+},
+{
+  question: "Which plateau in the USA is famous for both gold and uranium mining?",
+  options: ["Great Basin Plateau", "Colorado Plateau", "Ozark Plateau", "Piedmont Plateau"],
+  answer: 1
+},
+{
+  question: "Which plateau lies south of the Himalayas and holds the largest salt range in Pakistan?",
+  options: ["Laurentian Plateau", "Potwar Plateau", "Korat Plateau", "Jos Plateau"],
+  answer: 1
+},
+{
+  question: "Which of the following minerals is found in both Katanga and Jos Plateaus?",
+  options: ["Tin", "Cobalt", "Gold", "Columbite"],
+  answer: 0
+},
+{
+  question: "Which mineral is abundant in the Chiapas Plateau of Mexico?",
+  options: ["Zinc", "Coal", "Bauxite", "Iron"],
+  answer: 0
+},
+{
+  question: "The Korat Plateau is rich in which nutrient-rich mineral used in agriculture?",
+  options: ["Gypsum", "Coal", "Iron", "Salt"],
+  answer: 0
+},
+{
+  question: "Which plateau lies between the Andes and Amazon regions?",
+  options: ["Altiplano Plateau", "Putorana Plateau", "Mato Grosso Plateau", "Abyssinian Plateau"],
+  answer: 2
+},
+{
+  question: "Which plateau provides both uranium and copper deposits in Russia?",
+  options: ["Putorana Plateau", "Ural Plateau", "Siberian Plateau", "Volga Plateau"],
+  answer: 0
+},
+{
+  question: "Which mineral in the Katanga Plateau is vital for rechargeable batteries?",
+  options: ["Zinc", "Tantalum", "Cobalt", "Boron"],
+  answer: 2
+},
+{
+  question: "Which plateau's resources are largely untapped due to harsh climate?",
+  options: ["Putorana Plateau", "Altiplano Plateau", "Katanga Plateau", "Meseta Plateau"],
+  answer: 0
+}
+,
+{
+  question: "Which plateau is the most extensive in Africa for copper mining?",
+  options: ["Abyssinian Plateau", "Katanga Plateau", "Jos Plateau", "Korat Plateau"],
+  answer: 1
+},
+{
+  question: "Which mineral is most commonly extracted from the salt mines of the Potwar Plateau?",
+  options: ["Gypsum", "Phosphate", "Salt", "Zinc"],
+  answer: 2
+},
+{
+  question: "The Altiplano Plateau is rich in which battery-grade mineral?",
+  options: ["Tantalum", "Cobalt", "Zirconium", "Lithium"],
+  answer: 3
+},
+{
+  question: "The Shan Plateau contributes significantly to the export of which precious stone?",
+  options: ["Opal", "Jade", "Diamond", "Amber"],
+  answer: 1
+},
+{
+  question: "The Meseta Plateau lies on which peninsula in Europe?",
+  options: ["Iberian", "Balkan", "Scandinavian", "Crimean"],
+  answer: 0
+},
+{
+  question: "The Laurentian Plateau is part of which major geological shield?",
+  options: ["Brazilian Shield", "Canadian Shield", "Fennoscandian Shield", "Indian Shield"],
+  answer: 1
+},
+{
+  question: "Which plateau has economically significant uranium, iron, and gold in Canada?",
+  options: ["Putorana Plateau", "Laurentian Plateau", "Great Basin Plateau", "Ozark Plateau"],
+  answer: 1
+},
+{
+  question: "The Korat Plateau has reserves of which agricultural-use mineral?",
+  options: ["Bauxite", "Gypsum", "Lead", "Zinc"],
+  answer: 1
+},
+{
+  question: "Which US plateau is famous for its geological formations and uranium mines?",
+  options: ["Ozark Plateau", "Colorado Plateau", "Great Plains", "Piedmont Plateau"],
+  answer: 1
+},
+{
+  question: "Which mineral in the Katanga Plateau is considered a strategic global resource?",
+  options: ["Zinc", "Cobalt", "Tungsten", "Silver"],
+  answer: 1
+},
+{
+  question: "The Putorana Plateau is known for its deposits of which high-tech mineral?",
+  options: ["Columbite", "Palladium", "Gypsum", "Salt"],
+  answer: 1
+},
+{
+  question: "Which plateau in South America has tin and lithium reserves?",
+  options: ["Altiplano", "Chiapas", "Mato Grosso", "Patagonia"],
+  answer: 0
+},
+{
+  question: "Which plateau is associated with ancient volcanic activity and mineral richness in Russia?",
+  options: ["Volga Plateau", "Putorana Plateau", "Ural Plateau", "Yamal Plateau"],
+  answer: 1
+},
+{
+  question: "Which of these minerals is NOT commonly found in the Ozark Plateau?",
+  options: ["Iron", "Barite", "Gold", "Lead"],
+  answer: 2
+},
+{
+  question: "The Chiapas Plateau contains reserves of which economically important minerals?",
+  options: ["Zinc, Lead, Copper, Silver", "Tin, Columbite, Tantalum", "Gold, Platinum, Bauxite", "Lithium, Uranium, Tungsten"],
+  answer: 0
+},
+{
+  question: "The Jos Plateau was historically a major source of which metal?",
+  options: ["Zinc", "Tin", "Gold", "Bauxite"],
+  answer: 1
+},
+{
+  question: "Which plateau has some of the world’s largest zirconium deposits?",
+  options: ["Chiapas Plateau", "Mato Grosso Plateau", "Katanga Plateau", "Putorana Plateau"],
+  answer: 1
+},
+{
+  question: "Which mineral combination best describes the Shan Plateau?",
+  options: ["Gold and Nickel", "Tin and Jade", "Uranium and Zinc", "Tantalum and Cobalt"],
+  answer: 1
+},
+{
+  question: "The Potwar Plateau is known for extensive deposits of:",
+  options: ["Salt and Coal", "Iron and Copper", "Gold and Gypsum", "Columbite and Tantalum"],
+  answer: 0
+},
+{
+  question: "Which plateau in Myanmar contains both uranium and precious gemstones?",
+  options: ["Korat", "Chiapas", "Shan", "Katanga"],
+  answer: 2
+},
+{
+  question: "The Anatolian Plateau is part of which continent?",
+  options: ["Asia", "Europe", "Africa", "Both Asia and Europe"],
+  answer: 3
+},
+{
+  question: "Which plateau is least known for its mineral wealth?",
+  options: ["Patagonia", "Laurentian", "Katanga", "Ozark"],
+  answer: 0
+},
+{
+  question: "Which plateau is shared between Bolivia and Peru?",
+  options: ["Mato Grosso", "Altiplano", "Putorana", "Abyssinian"],
+  answer: 1
+},
+{
+  question: "The Jos Plateau is part of which African nation?",
+  options: ["Nigeria", "Kenya", "DR Congo", "Ethiopia"],
+  answer: 0
+},
+{
+  question: "Which of the following is NOT a mineral of the Meseta Plateau?",
+  options: ["Tin", "Tungsten", "Cobalt", "Coal"],
+  answer: 2
+}
+,
+{
+  question: "Which plateau is associated with the Canadian Shield and rich in ancient rock formations?",
+  options: ["Laurentian Plateau", "Katanga Plateau", "Meseta Plateau", "Putorana Plateau"],
+  answer: 0
+},
+{
+  question: "Which plateau in Brazil is known for its radioactive mineral wealth?",
+  options: ["Altiplano Plateau", "Mato Grosso Plateau", "Abyssinian Plateau", "Laurentian Plateau"],
+  answer: 1
+},
+{
+  question: "Which mineral is not commonly found in the Shan Plateau?",
+  options: ["Jade", "Tin", "Uranium", "Bauxite"],
+  answer: 3
+},
+{
+  question: "The Great Basin Plateau is well known for deposits of which two minerals?",
+  options: ["Gold and Silver", "Copper and Uranium", "Zinc and Lead", "Tin and Gypsum"],
+  answer: 0
+},
+{
+  question: "Which mineral from the Altiplano Plateau is critical to global battery production?",
+  options: ["Columbite", "Lithium", "Gold", "Nickel"],
+  answer: 1
+},
+{
+  question: "Which plateau contributes significantly to Thailand’s potash industry?",
+  options: ["Chiapas Plateau", "Korat Plateau", "Ozark Plateau", "Meseta Plateau"],
+  answer: 1
+},
+{
+  question: "Which US plateau lies east of the Appalachian Mountains?",
+  options: ["Ozark Plateau", "Great Basin Plateau", "Piedmont Plateau", "Colorado Plateau"],
+  answer: 2
+},
+{
+  question: "Which mineral-rich plateau lies mostly within DR Congo?",
+  options: ["Shan Plateau", "Katanga Plateau", "Jos Plateau", "Laurentian Plateau"],
+  answer: 1
+},
+{
+  question: "Which plateau’s mineral wealth includes salt and gypsum, making it key for domestic consumption in Pakistan?",
+  options: ["Potwar Plateau", "Mato Grosso Plateau", "Chiapas Plateau", "Putorana Plateau"],
+  answer: 0
+},
+{
+  question: "Which plateau contains economic quantities of silver and lead in Mexico?",
+  options: ["Patagonia Plateau", "Chiapas Plateau", "Katanga Plateau", "Altiplano Plateau"],
+  answer: 1
+},
+{
+  question: "Which plateau includes the highest elevation in Ethiopia?",
+  options: ["Shan Plateau", "Abyssinian Plateau", "Potwar Plateau", "Korat Plateau"],
+  answer: 1
+},
+{
+  question: "The Meseta Plateau in Europe is part of which geographical structure?",
+  options: ["Volcanic arc", "Shield region", "Intermontane basin", "Old fold mountains"],
+  answer: 3
+},
+{
+  question: "Which mineral makes the Katanga Plateau one of the most strategically important mining zones?",
+  options: ["Gold", "Cobalt", "Silver", "Iron"],
+  answer: 1
+},
+{
+  question: "The Jos Plateau's tin mining industry peaked during which period?",
+  options: ["Early 1800s", "Colonial era", "Post-independence era", "21st century"],
+  answer: 1
+},
+{
+  question: "Which plateau supports mining of mica, feldspar, and titanium?",
+  options: ["Mato Grosso", "Piedmont Plateau", "Chiapas Plateau", "Putorana Plateau"],
+  answer: 1
+},
+{
+  question: "Which mineral is NOT found in the Putorana Plateau?",
+  options: ["Nickel", "Copper", "Columbite", "Palladium"],
+  answer: 2
+},
+{
+  question: "The Korat Plateau contributes to Thailand’s production of which two minerals?",
+  options: ["Tin and Copper", "Potash and Gypsum", "Bauxite and Iron", "Coal and Silver"],
+  answer: 1
+},
+{
+  question: "Which plateau has one of the world’s largest salt flats?",
+  options: ["Mato Grosso Plateau", "Altiplano Plateau", "Abyssinian Plateau", "Jos Plateau"],
+  answer: 1
+},
+{
+  question: "Which plateau is known for barite used in drilling muds for oil exploration?",
+  options: ["Great Basin", "Ozark Plateau", "Putorana Plateau", "Chiapas Plateau"],
+  answer: 1
+},
+{
+  question: "The Putorana Plateau is located in which part of the Arctic Circle?",
+  options: ["Eastern Siberia", "Northern Ural", "Central Siberia", "Far West Russia"],
+  answer: 2
+},
+{
+  question: "Which mineral is mined in both the Shan Plateau and the Katanga Plateau?",
+  options: ["Gold", "Tin", "Uranium", "Tungsten"],
+  answer: 2
+},
+{
+  question: "Which country is home to both the Ozark and Piedmont Plateaus?",
+  options: ["Canada", "Brazil", "USA", "Mexico"],
+  answer: 2
+},
+{
+  question: "Which plateau’s uranium resources helped drive early nuclear development in North America?",
+  options: ["Colorado Plateau", "Laurentian Plateau", "Mato Grosso Plateau", "Jos Plateau"],
+  answer: 0
+},
+{
+  question: "What type of geological origin is shared by many mineral-rich plateaus like Katanga and Jos?",
+  options: ["Volcanic", "Sedimentary", "Precambrian shields", "Glacial"],
+  answer: 2
+},
+{
+  question: "Which plateau has economic deposits of columbite, used for niobium extraction?",
+  options: ["Jos Plateau", "Korat Plateau", "Anatolian Plateau", "Meseta Plateau"],
+  answer: 0
+}
+,
+
+  {
+    question: "Which plateau is known as the 'Roof of the World' and rich in copper and gold?",
+    options: ["Mato Grosso Plateau", "Tibetan Plateau", "Altiplano Plateau", "Laurentian Plateau"],
+    answer: 1
+  },
+  {
+    question: "The Piedmont Plateau is located in which country?",
+    options: ["Canada", "Brazil", "USA", "Argentina"],
+    answer: 2
+  },
+  {
+    question: "Which plateau in Argentina has limited mineral resources?",
+    options: ["Piedmont Plateau", "Patagonia Plateau", "Ozark Plateau", "Anatolian Plateau"],
+    answer: 1
+  },
+  {
+    question: "Which plateau in Brazil is rich in uranium and zirconium?",
+    options: ["Piedmont", "Mato Grosso", "Katanga", "Korat"],
+    answer: 1
+  },
+  {
+    question: "Lead and zinc are major minerals of which US plateau?",
+    options: ["Ozark Plateau", "Colorado Plateau", "Piedmont Plateau", "Great Basin Plateau"],
+    answer: 0
+  },
+  {
+    question: "Coal, limestone, and salt are found in which Pakistani plateau?",
+    options: ["Potwar Plateau", "Shan Plateau", "Korat Plateau", "Piedmont Plateau"],
+    answer: 0
+  },
+  {
+    question: "The Anatolian Plateau is located in which country?",
+    options: ["Iran", "Afghanistan", "Turkey", "Syria"],
+    answer: 2
+  },
+  {
+    question: "Which plateau in Thailand is known for potash and gypsum?",
+    options: ["Potwar", "Korat", "Shan", "Ozark"],
+    answer: 1
+  },
+  {
+    question: "Which plateau in Myanmar is known for jade, tin, and uranium?",
+    options: ["Korat Plateau", "Shan Plateau", "Patagonia Plateau", "Anatolian Plateau"],
+    answer: 1
+  },
+  {
+    question: "The Colorado Plateau is rich in which mineral?",
+    options: ["Coal", "Uranium", "Bauxite", "Boron"],
+    answer: 1
+  },
+  {
+    question: "Gold and silver are commonly found in which U.S. plateau?",
+    options: ["Great Basin Plateau", "Ozark Plateau", "Piedmont Plateau", "Patagonia Plateau"],
+    answer: 0
+  },
+  {
+    question: "Which African plateau is known for gold and platinum group elements?",
+    options: ["Altiplano", "Jos Plateau", "Abyssinian Plateau", "Katanga Plateau"],
+    answer: 2
+  },
+  {
+    question: "The Chiapas Plateau is located in:",
+    options: ["Mexico", "Brazil", "Peru", "Colombia"],
+    answer: 0
+  },
+  {
+    question: "Tin and columbite are major minerals of which Nigerian plateau?",
+    options: ["Katanga Plateau", "Abyssinian Plateau", "Jos Plateau", "Mato Grosso Plateau"],
+    answer: 2
+  },
+  {
+    question: "Which plateau lies in Bolivia and Peru and is rich in lithium and tin?",
+    options: ["Shan Plateau", "Altiplano Plateau", "Putorana Plateau", "Jos Plateau"],
+    answer: 1
+  },
+  {
+    question: "Which Russian plateau is known for nickel, copper, and palladium?",
+    options: ["Laurentian Plateau", "Putorana Plateau", "Altiplano Plateau", "Meseta Plateau"],
+    answer: 1
+  },
+  {
+    question: "The Meseta Plateau is shared by which two countries?",
+    options: ["Spain and Portugal", "France and Spain", "Italy and Austria", "Germany and Austria"],
+    answer: 0
+  },
+  {
+    question: "Which Canadian plateau contains rich deposits of nickel and uranium?",
+    options: ["Ozark Plateau", "Katanga Plateau", "Laurentian Plateau", "Putorana Plateau"],
+    answer: 2
+  },
+  {
+    question: "Copper and cobalt are major ores of which Central African plateau?",
+    options: ["Katanga Plateau", "Jos Plateau", "Shan Plateau", "Abyssinian Plateau"],
+    answer: 0
+  },
+  {
+    question: "Which plateau has mineral-rich salt flats including lithium?",
+    options: ["Laurentian Plateau", "Altiplano Plateau", "Shan Plateau", "Jos Plateau"],
+    answer: 1
+  },
+  {
+    question: "Boron is a significant mineral of which plateau?",
+    options: ["Anatolian Plateau", "Korat Plateau", "Potwar Plateau", "Chiapas Plateau"],
+    answer: 0
+  },
+  {
+    question: "The Jos Plateau is famous for which two strategic minerals?",
+    options: ["Copper and Zinc", "Tin and Columbite", "Gold and Uranium", "Nickel and Iron"],
+    answer: 1
+  },
+  {
+    question: "Which plateau is associated with mica, titanium, and feldspar?",
+    options: ["Piedmont Plateau", "Great Basin Plateau", "Chiapas Plateau", "Ozark Plateau"],
+    answer: 0
+  },
+  {
+    question: "Where is the Potwar Plateau located?",
+    options: ["Iran", "Pakistan", "India", "Bangladesh"],
+    answer: 1
+  },
+  {
+    question: "What is the major mineral found in the Chiapas Plateau?",
+    options: ["Mica", "Silver", "Coal", "Columbite"],
+    answer: 1
+  },
+  {
+    question: "Which plateau in the USA is rich in barite and iron?",
+    options: ["Colorado Plateau", "Great Basin Plateau", "Ozark Plateau", "Piedmont Plateau"],
+    answer: 2
+  },
+  {
+    question: "Phosphate is a notable resource in which African plateau?",
+    options: ["Katanga Plateau", "Jos Plateau", "Abyssinian Plateau", "Shan Plateau"],
+    answer: 1
+  },
+  {
+    question: "The Putorana Plateau lies in which country?",
+    options: ["Ukraine", "Russia", "China", "Kazakhstan"],
+    answer: 1
+  },
+  {
+    question: "Which plateau is rich in gold, silver, and uranium in the southwestern USA?",
+    options: ["Great Basin", "Colorado Plateau", "Ozark Plateau", "Piedmont Plateau"],
+    answer: 1
+  },
+  {
+    question: "The Meseta Plateau is primarily located in:",
+    options: ["Spain", "France", "Germany", "Italy"],
+    answer: 0
+  }
+
+
+];
+
+    let currentQuestion = 0;
+let score = 0;
+let quizStartTime = 0;
+
+const startScreen = document.getElementById("start-screen");
+const quizScreen = document.getElementById("quiz-screen");
+const resultScreen = document.getElementById("result-screen");
+const questionEl = document.getElementById("question");
+const optionsEl = document.getElementById("options");
+const scoreEl = document.getElementById("score");
+const questionCountEl = document.getElementById("question-count");
+
+function startQuiz() {
+  currentQuestion = 0;
+  score = 0;
+  shuffleArray(quizData); // Randomize questions each time
+  quizStartTime = Date.now();
+  startScreen.classList.add("hide");
+  resultScreen.classList.add("hide");
+  quizScreen.classList.remove("hide");
+  loadQuestion();
+    }
+
+    function loadQuestion() {
+      const q = quizData[currentQuestion];
+      questionCountEl.textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
+      questionEl.textContent = q.question;
+      optionsEl.innerHTML = "";
+      q.options.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.textContent = option;
+        button.classList.add("option-btn");
+        button.onclick = () => selectOption(button, index);
+        optionsEl.appendChild(button);
+      });
+      document.getElementById("nextBtn").disabled = true;
+    }
+
+    function selectOption(button, selectedIndex) {
+      const correctIndex = quizData[currentQuestion].answer;
+      const buttons = optionsEl.querySelectorAll(".option-btn");
+      buttons.forEach(btn => btn.disabled = true);
+
+      if (selectedIndex === correctIndex) {
+        button.classList.add("correct");
+        score++;
+      } else {
+        button.classList.add("wrong");
+        buttons[correctIndex].classList.add("correct");
+      }
+      document.getElementById("nextBtn").disabled = false;
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion < quizData.length) {
+        loadQuestion();
+      } else {
+        endQuiz();
+      }
+    }
+
+    function endQuiz() {
+  quizScreen.classList.add("hide");
+  resultScreen.classList.remove("hide");
+  const timeTaken = Math.floor((Date.now() - quizStartTime) / 1000);
+  const minutes = Math.floor(timeTaken / 60);
+  const seconds = timeTaken % 60;
+  scoreEl.textContent = `You scored ${score} out of ${quizData.length} in ${minutes}m ${seconds}s.`;
+    }
+  
+
+    // Fisher-Yates Shuffle Algorithm
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+  </script>
+</body>
+</html>
